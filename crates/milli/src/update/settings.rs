@@ -1642,10 +1642,10 @@ impl<'a, 't, 'i> Settings<'a, 't, 'i> {
             sortable_fields: _,
             foreign_keys: _,
             criteria: _,
-            stop_words: Setting::NotSet, // TODO (require force reindexing of searchables)
-            non_separator_tokens: Setting::NotSet, // TODO (require force reindexing of searchables)
-            separator_tokens: Setting::NotSet, // TODO (require force reindexing of searchables)
-            dictionary: Setting::NotSet, // TODO (require force reindexing of searchables)
+            stop_words: _,
+            non_separator_tokens: _,
+            separator_tokens: _,
+            dictionary: _,
             distinct_field: _,
             synonyms: _,
             primary_key: _,
@@ -1660,7 +1660,7 @@ impl<'a, 't, 'i> Settings<'a, 't, 'i> {
             proximity_precision: _,
             embedder_settings: _,
             search_cutoff: _,
-            localized_attributes_rules: Setting::NotSet, // TODO (require force reindexing of searchables)
+            localized_attributes_rules: _,
             prefix_search: _,
             facet_search: _,
             disable_on_numbers: _,
@@ -1703,6 +1703,11 @@ impl<'a, 't, 'i> Settings<'a, 't, 'i> {
             self.update_prefix_search()?;
             self.update_exact_words()?;
             self.update_disabled_typos_terms()?;
+            self.update_stop_words()?;
+            self.update_non_separator_tokens()?;
+            self.update_separator_tokens()?;
+            self.update_dictionary()?;
+            self.update_localized_attributes_rules()?;
 
             // Note that we don't need to update the searchables here,
             // as it will be done after the settings update.
