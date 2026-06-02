@@ -70,11 +70,15 @@ impl UpgradeIndex for ConvertArroyToHannoy {
                     // If the store is hannoy we clean the stores in case some were misconfigured.
                     // Note that we never experienced an issue with hannoy stores but we are not sure
                     // they are affected too.
-                    config.config.quantized = match vector_store.clean_stores(wtxn)? {
-                        Some(QuantizationStatus::Quantized) => Some(true),
-                        Some(QuantizationStatus::NonQuantized) => Some(false),
-                        None => config.config.quantized,
-                    };
+                    config.config.quantized =
+                        match (config.config.quantized, vector_store.clean_stores(wtxn)?) {
+                            (None, None) => None,
+                            (None, Some(QuantizationStatus::NonQuantized)) => None, // None defaults to false
+                            (None, Some(QuantizationStatus::Quantized)) => Some(true),
+                            (Some(false), None) => Some(false), // Keep it explicit
+                            (Some(true), None) => Some(true),   // Keep it explicit
+                            (Some(expected), Some(_)) => Some(expected),
+                        };
                 }
             }
         }
